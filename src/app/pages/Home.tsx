@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+
 import {
   Shield,
   Zap,
@@ -789,7 +790,7 @@ export function Home() {
   {/* Server Map */}
       <ServerMap />
 
-      {/* Region Showcase */}
+      {/* Region Showcase */}git init
       <RegionShowcase />
 
       {/* Download Section */}
@@ -886,7 +887,7 @@ export function Home() {
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ duration: 3, repeat: Infinity }}
             >
-              <img src="/assets/logo.png" className="h-16 w-16 text-cyan-400" />
+              <Shield className="h-8 w-8" />
             </motion.div>
 
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
