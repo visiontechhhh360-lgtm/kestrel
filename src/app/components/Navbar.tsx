@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 
-import logo from "./assets/logo.png"; 
+import logo from '../../assets/logo.png'; 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -43,19 +43,17 @@ export function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <motion.div
-              whileHover={{ rotate: 360, scale: 1.1 }}
-              transition={{ duration: 0.6 }}
-              className="relative"
-            >
-             
-              
-            </motion.div>
-              return <img src={logo}   alt="Kestrel VPN" className="h-8 w-8" />
-            <span className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-              Kestrel VPN
-            </span>
-          </Link>
+  <motion.div
+    whileHover={{ rotate: 360, scale: 1.1 }}
+    transition={{ duration: 0.6 }}
+    className="relative"
+  >
+    <img src={logo} alt="Kestrel VPN" className="h-8 w-8" />
+  </motion.div>
+  <span className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+    Kestrel VPN
+  </span>
+</Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
