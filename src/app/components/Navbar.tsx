@@ -51,7 +51,7 @@ export function Navbar() {
              
               
             </motion.div>
-              <img src={logo}   alt="Kestrel VPN" className="h-8 w-8" />
+              return <img src={logo}   alt="Kestrel VPN" className="h-8 w-8" />
             <span className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
               Kestrel VPN
             </span>
