@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 
+/// <reference types="vite/client" />
+
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -50,7 +52,7 @@ export function Navbar() {
              
               
             </motion.div>
-              <img src="/assets/logo.png" alt="Kestrel VPN" className="h-8 w-8" />
+              <img src="/logo.png"  alt="Kestrel VPN" className="h-8 w-8" />
             <span className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
               Kestrel VPN
             </span>
