@@ -48,7 +48,7 @@ export function Navbar() {
     transition={{ duration: 0.6 }}
     className="relative"
   >
-    <img src={logo} alt="Kestrel VPN" className="h-8 w-8" />
+    <Shield className="h-8 w-8" />
   </motion.div>
   <span className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
     Kestrel VPN
