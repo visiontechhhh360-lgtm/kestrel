@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 
-import logo from "./logo.png"; 
+import logo from "./assets/logo.png"; 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
