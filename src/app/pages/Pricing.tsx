@@ -436,7 +436,7 @@ export function Pricing() {
               transition={{ duration: 0.6 }}
               className="inline-flex p-4 bg-primary/10 rounded-full mb-8"
             >
-              <img src="/assets/logo.png" className="h-12 w-12 text-primary" />
+              <img src="src/assets/logo.png" className="h-12 w-12 text-primary" />
             </motion.div>
 
             <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
