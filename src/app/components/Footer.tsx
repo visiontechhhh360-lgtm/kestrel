@@ -10,7 +10,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <img src="/assets/logo.png" className="h-8 w-8 text-primary" />
+              <img src="/logo.png" className="h-8 w-8 text-primary" />
               <span className="text-xl font-bold text-foreground">Kestrel VPN</span>
             </Link>
             <p className="text-muted-foreground mb-4">
