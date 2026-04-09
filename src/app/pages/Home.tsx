@@ -694,7 +694,7 @@ export function Home() {
         </div>
       </section>
 
-     
+
 
        {/* App Mockup Section */}
       <AppMockup />
