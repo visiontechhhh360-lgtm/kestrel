@@ -105,14 +105,7 @@ export function Footer() {
                 <Apple className="h-4 w-4 mr-2" />
                 App Store
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-primary/40 hover:border-primary hover:bg-primary/10"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Android
-              </Button>
+             
             </div>
           </div>
         </div>
