@@ -163,9 +163,7 @@ export function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
               </motion.span>
-              <span className="text-sm bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent font-semibold">
-                🔒 Trusted by 5M+ Users Worldwide
-              </span>
+              
             </motion.div>
 
             {/* Main Heading */}
@@ -696,72 +694,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <motion.div
-            className="absolute top-1/2 right-0 w-96 h-96 bg-gradient-to-l from-rose-500/15 to-pink-500/10 rounded-full mix-blend-screen filter blur-3xl"
-            animate={{ scale: [1, 1.3, 1], rotate: [0, -180, 0] }}
-            transition={{ duration: 20, repeat: Infinity }}
-          />
-        </div>
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <ScrollReveal className="text-center mb-20">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6">
-              Loved by Millions Worldwide
-            </h2>
-            <p className="text-lg text-slate-400 max-w-3xl mx-auto">
-              See what our users say about their experience with Kestrel VPN.
-            </p>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Alex Morgan",
-                role: "Security Analyst",
-                review: "Kestrel VPN gives me peace of mind whenever I'm traveling or using public Wi-Fi.",
-              },
-              {
-                name: "Sarah Kim",
-                role: "Digital Nomad",
-                review: "Super fast speeds and incredibly easy to use. Perfect for streaming and remote work.",
-              },
-              {
-                name: "David Chen",
-                role: "Software Engineer",
-                review: "The best VPN I've used. Reliable, fast, and the privacy features are top tier.",
-              },
-            ].map((t, index) => (
-              <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="p-8 bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700 hover:border-slate-600 transition-all backdrop-blur-sm">
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                    ))}
-                  </div>
-
-                  <p className="text-slate-300 mb-6 leading-relaxed">
-                    "{t.review}"
-                  </p>
-
-                  <div>
-                    <div className="text-white font-semibold">{t.name}</div>
-                    <div className="text-sm text-slate-400">{t.role}</div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+     
 
        {/* App Mockup Section */}
       <AppMockup />
@@ -777,7 +710,7 @@ export function Home() {
             </p>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-1 ">
             <ScrollReveal delay={0.1}>
               <SpeedTest />
             </ScrollReveal>
@@ -811,8 +744,9 @@ export function Home() {
               Available on all major platforms
             </p>
           </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div className="max-w-5xl mx-auto">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
             {[
               { name: "Windows", icon: Download, platform: "Windows 10 & 11", color: "from-blue-500 to-cyan-500" },
               { name: "macOS", icon: Apple, platform: "10.14+", color: "from-gray-500 to-slate-500" },
