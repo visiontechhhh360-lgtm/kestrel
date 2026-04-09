@@ -788,7 +788,7 @@ export function Home() {
         </div>
       </section>
   {/* Server Map */}
-      <ServerMap />
+    
 
       {/* Region Showcase */}
       <RegionShowcase />
@@ -818,7 +818,7 @@ export function Home() {
               { name: "Windows", icon: Download, platform: "Windows 10 & 11", color: "from-blue-500 to-cyan-500" },
               { name: "macOS", icon: Apple, platform: "10.14+", color: "from-gray-500 to-slate-500" },
               { name: "iOS", icon: Apple, platform: "iOS 13+", color: "from-black to-gray-700" },
-              { name: "Android", icon: Download, platform: "Android 8+", color: "from-green-500 to-emerald-500" },
+
             ].map((download, index) => (
               <motion.div
                 key={download.name}
