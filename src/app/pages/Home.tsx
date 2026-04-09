@@ -788,6 +788,7 @@ export function Home() {
         </div>
       </section>
   {/* Server Map */}
+      <ServerMap />
     
 
       {/* Region Showcase */}
