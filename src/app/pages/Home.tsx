@@ -777,13 +777,11 @@ export function Home() {
             </p>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
             <ScrollReveal delay={0.1}>
               <SpeedTest />
             </ScrollReveal>
-            <ScrollReveal delay={0.2}>
-              <ConnectionSimulator />
-            </ScrollReveal>
+            
           </div>
         </div>
       </section>
@@ -814,7 +812,7 @@ export function Home() {
             </p>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { name: "Windows", icon: Download, platform: "Windows 10 & 11", color: "from-blue-500 to-cyan-500" },
               { name: "macOS", icon: Apple, platform: "10.14+", color: "from-gray-500 to-slate-500" },
