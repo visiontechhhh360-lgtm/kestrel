@@ -20,7 +20,14 @@ export function AppMockup() {
       image: "https://images.unsplash.com/photo-1766171359875-73155eff7f66?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsYXB0b3AlMjBjb21wdXRlciUyMHNjcmVlbiUyMHZwbiUyMGludGVyZmFjZXxlbnwxfHx8fDE3NzI2NDY5OTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       delay: 0.2,
     },
-   
+    {
+      type: "tablet",
+      icon: Tablet,
+      title: "Tablet App",
+      description: "iPad & Android Tablets",
+      image: "https://images.unsplash.com/photo-1740721455292-e5cd29544381?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0YWJsZXQlMjBkZXZpY2UlMjBhcHAlMjBtb2NrdXB8ZW58MXx8fHwxNzcyNjQ2OTk0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      delay: 0.4,
+    },
   ];
 
   return (
