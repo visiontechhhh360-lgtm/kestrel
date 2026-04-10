@@ -134,8 +134,8 @@ export function Contact() {
     {
       icon: MapPin,
       title: "Visit Us",
-      content: "123 Privacy Boulevard",
-      description: "Secure City, SC 12345, USA",
+      content: "Pakistan",
+      description: "Global Headquarters",
       color: "from-purple-500 to-pink-500",
     },
   ];
