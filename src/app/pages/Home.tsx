@@ -794,6 +794,7 @@ export function Home() {
             ))}
           </div>
         </div>
+        </div>
       </section>
 
       {/* Final CTA */}
