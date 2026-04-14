@@ -629,7 +629,7 @@ export function Home() {
               {
                 step: "01",
                 title: "Choose Your Plan",
-                description: "Pick the perfect plan for your needs. All plans include money-back guarantee",
+                description: "Pick the perfect plan for your needs. All plans include money-back guarantee.",
                 icon: <TrendingUp className="h-12 w-12" />,
                 color: "from-cyan-500 to-blue-500",
               },
