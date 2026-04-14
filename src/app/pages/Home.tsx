@@ -76,7 +76,7 @@ export function Home() {
     {
       title: "Advanced Security",
       description: "Military-grade encryption with advanced privacy controls",
-       image: "https://www.csoonline.com/wp-content/uploads/2023/06/cso_vpn_security_vulnerabilities_network_servers_by_funtap_gettyimages-1056953998_alert_by_200degrees_gettyimages-1146257766-100813366-orig.jpg?resize=1536%2C1024&quality=50&strip=all",
+      image: "https://www.csoonline.com/wp-content/uploads/2023/06/cso_vpn_security_vulnerabilities_network_servers_by_funtap_gettyimages-1056953998_alert_by_200degrees_gettyimages-1146257766-100813366-orig.jpg?resize=1536%2C1024&quality=50&strip=all",
       features: ["Kill switch protection", "DNS leak blocking", "Protocol selection"],
       color: "from-violet-500/20 to-purple-500/20",
     },
