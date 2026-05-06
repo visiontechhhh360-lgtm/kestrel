@@ -1,4 +1,5 @@
-import { Outlet, useLocation } from "react-router";
+import { useLayoutEffect } from "react";
+import { Outlet, ScrollRestoration, useLocation, useNavigationType } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { Helmet } from "../components/Helmet";
@@ -7,10 +8,19 @@ import { Toaster } from "sonner";
 
 export function Root() {
   const location = useLocation();
+  const navigationType = useNavigationType();
+
+  useLayoutEffect(() => {
+    if (navigationType === "POP") {
+      return;
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname, location.search, navigationType]);
 
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet />
+      <ScrollRestoration />
       <Navbar />
       <AnimatePresence mode="wait">
         <motion.main

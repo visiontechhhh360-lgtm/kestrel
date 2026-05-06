@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Shield, Mail, MapPin, Apple, Download } from "lucide-react";
+import { Mail, MapPin, Apple, Download, Phone } from "lucide-react";
 import { Button } from "./ui/button";
 
 export function Footer() {
@@ -15,13 +15,19 @@ export function Footer() {
             </Link>
             <p className="text-muted-foreground mb-4">
               Fast and secure VPN service for privacy and freedom. Protect your online identity with
-              military-grade encryption and high-speed global servers.
+              strong encryption and high-speed global servers.
             </p>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 <a href="mailto:support@kestrelvpn.com" className="hover:text-primary transition-colors">
                   support@kestrelvpn.com
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                <a href="tel:03290760191" className="hover:text-primary transition-colors">
+                  0329 0760191
                 </a>
               </div>
               <div className="flex items-center gap-2">
@@ -60,16 +66,6 @@ export function Footer() {
               <li>
                 <Link to="/privacy-policy" className="hover:text-primary transition-colors">
                   Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms-of-service" className="hover:text-primary transition-colors">
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link to="/no-logs-policy" className="hover:text-primary transition-colors">
-                  No-Logs Policy
                 </Link>
               </li>
             </ul>

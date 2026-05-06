@@ -3,33 +3,32 @@ import { Globe } from "lucide-react";
 
 export function RegionShowcase() {
   const regions = [
-    { country: "United States", flag: "🇺🇸", servers: 1200 },
-    { country: "United Kingdom", flag: "🇬🇧", servers: 450 },
-    { country: "Germany", flag: "🇩🇪", servers: 380 },
-    { country: "France", flag: "🇫🇷", servers: 320 },
-    { country: "Canada", flag: "🇨🇦", servers: 280 },
-    { country: "Australia", flag: "🇦🇺", servers: 250 },
-    { country: "Japan", flag: "🇯🇵", servers: 290 },
-    { country: "Singapore", flag: "🇸🇬", servers: 180 },
-    { country: "Netherlands", flag: "🇳🇱", servers: 220 },
-    { country: "Sweden", flag: "🇸🇪", servers: 150 },
-    { country: "Switzerland", flag: "🇨🇭", servers: 140 },
-    { country: "Spain", flag: "🇪🇸", servers: 200 },
-    { country: "Italy", flag: "🇮🇹", servers: 180 },
-    { country: "Brazil", flag: "🇧🇷", servers: 160 },
-    { country: "India", flag: "🇮🇳", servers: 240 },
-    { country: "South Korea", flag: "🇰🇷", servers: 190 },
-    { country: "Hong Kong", flag: "🇭🇰", servers: 120 },
-    { country: "United Arab Emirates", flag: "🇦🇪", servers: 110 },
-    { country: "Mexico", flag: "🇲🇽", servers: 130 },
-    { country: "Argentina", flag: "🇦🇷", servers: 90 },
-    { country: "South Africa", flag: "🇿🇦", servers: 85 },
-    { country: "Norway", flag: "🇳🇴", servers: 100 },
-    { country: "Denmark", flag: "🇩🇰", servers: 95 },
-    { country: "Finland", flag: "🇫🇮", servers: 88 },
+    { country: "France", flag: "🇫🇷" },
+    { country: "United States", flag: "🇺🇸" },
+    { country: "The Netherlands", flag: "🇳🇱" },
+    { country: "Portugal", flag: "🇵🇹" },
+    { country: "Poland", flag: "🇵🇱" },
+    { country: "United Kingdom", flag: "🇬🇧" },
+    { country: "Australia", flag: "🇦🇺" },
+    { country: "Canada", flag: "🇨🇦" },
+    { country: "Germany", flag: "🇩🇪" },
+    { country: "Singapore", flag: "🇸🇬" },
+    { country: "Austria", flag: "🇦🇹" },
+    { country: "Belgium", flag: "🇧🇪" },
+    { country: "Moldova", flag: "🇲🇩" },
+    { country: "Finland", flag: "🇫🇮" },
+    { country: "Hong Kong", flag: "🇭🇰" },
+    { country: "South Korea", flag: "🇰🇷" },
+    { country: "Romania", flag: "🇷🇴" },
+    { country: "Spain", flag: "🇪🇸" },
+    { country: "Bulgaria", flag: "🇧🇬" },
+    { country: "Switzerland", flag: "🇨🇭" },
+    { country: "Turkey", flag: "🇹🇷" },
+    { country: "Russia", flag: "🇷🇺" },
+    { country: "Greece", flag: "🇬🇷" },
+    { country: "Japan", flag: "🇯🇵" },
   ];
 
-  // Duplicate regions for seamless loop
   const duplicatedRegions = [...regions, ...regions, ...regions];
 
   return (
@@ -45,11 +44,10 @@ export function RegionShowcase() {
           <h2 className="text-2xl font-bold text-foreground">Global Server Network</h2>
         </div>
         <p className="text-center text-muted-foreground">
-          Connect to our high-speed servers in 95+ countries worldwide
+          High-speed VPN coverage in 25+ countries worldwide
         </p>
       </div>
 
-      {/* Top Row - Moving Left */}
       <div className="relative mb-4">
         <motion.div
           className="flex gap-4"
@@ -76,10 +74,7 @@ export function RegionShowcase() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="text-4xl">{region.flag}</span>
-                  <div>
-                    <p className="font-semibold text-foreground text-sm">{region.country}</p>
-                    <p className="text-xs text-primary">{region.servers} servers</p>
-                  </div>
+                  <p className="font-semibold text-foreground text-sm">{region.country}</p>
                 </div>
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
@@ -92,7 +87,6 @@ export function RegionShowcase() {
         </motion.div>
       </div>
 
-      {/* Bottom Row - Moving Right */}
       <div className="relative">
         <motion.div
           className="flex gap-4"
@@ -119,10 +113,7 @@ export function RegionShowcase() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="text-4xl">{region.flag}</span>
-                  <div>
-                    <p className="font-semibold text-foreground text-sm">{region.country}</p>
-                    <p className="text-xs text-primary">{region.servers} servers</p>
-                  </div>
+                  <p className="font-semibold text-foreground text-sm">{region.country}</p>
                 </div>
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
@@ -135,7 +126,6 @@ export function RegionShowcase() {
         </motion.div>
       </div>
 
-      {/* Gradient Overlays for Fade Effect */}
       <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent pointer-events-none z-10" />
     </div>

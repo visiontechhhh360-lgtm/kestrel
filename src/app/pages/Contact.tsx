@@ -127,7 +127,7 @@ export function Contact() {
     {
       icon: Phone,
       title: "Call Us",
-      content: "+1 (555) 123-4567",
+      content: "0329 0760191",
       description: "Mon-Fri from 8am to 6pm EST",
       color: "from-blue-500 to-purple-500",
     },
@@ -266,7 +266,19 @@ export function Contact() {
                         </motion.div>
 
                         <h3 className="text-2xl font-bold text-white mb-3">{info.title}</h3>
-                        <p className="text-white font-semibold text-lg mb-2">{info.content}</p>
+                        <p className="text-white font-semibold text-lg mb-2">
+                          {info.title === "Email Us" ? (
+                            <a href={`mailto:${info.content}`} className="hover:underline">
+                              {info.content}
+                            </a>
+                          ) : info.title === "Call Us" ? (
+                            <a href="tel:03290760191" className="hover:underline">
+                              {info.content}
+                            </a>
+                          ) : (
+                            info.content
+                          )}
+                        </p>
                         <p className="text-slate-400">{info.description}</p>
                       </div>
 

@@ -12,14 +12,14 @@ export function Checkout() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const planParam = searchParams.get("plan") || "monthly";
+  const planKey = planParam === "yearly" ? "yearly" : "monthly";
 
   const plans = {
-    weekly: { name: "Weekly Pro Plan", price: 1.99, period: "week" },
     monthly: { name: "Monthly Pro Plan", price: 4.99, period: "month" },
-    yearly: { name: "Yearly Pro Plan", price: 49.99, period: "year" },
+    yearly: { name: "Yearly Pro Plan", price: 48.99, period: "year" },
   };
 
-  const selectedPlan = plans[planParam as keyof typeof plans] || plans.monthly;
+  const selectedPlan = plans[planKey];
 
   const [step, setStep] = useState(1); // 1: Details, 2: Payment, 3: Success
   const [formData, setFormData] = useState({
@@ -278,7 +278,7 @@ export function Checkout() {
             Secure Checkout
           </h1>
           <p className="text-muted-foreground text-center">
-            Complete your purchase securely with military-grade encryption
+            Complete your purchase over a secure, encrypted connection
           </p>
         </div>
       </section>
@@ -657,11 +657,11 @@ export function Checkout() {
                   </div>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li>✓ Unlimited bandwidth</li>
-                    <li>✓ 60+ global server locations</li>
-                    <li>✓ Military-grade encryption</li>
+                    <li>✓ 30+ server locations in 25+ countries</li>
+                    <li>✓ Strong encryption</li>
                     <li>✓ No-logs policy</li>
                     <li>✓ 24/7 customer support</li>
-                    <li>✓ 10 device connections</li>
+                    <li>✓ Multiple device support</li>
                   </ul>
                 </div>
 

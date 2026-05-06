@@ -7,7 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../components/ui/accordion";
-import { Check, Zap, TrendingUp, Trophy, Shield, Lock } from "lucide-react";
+import { Check, TrendingUp, Trophy, Shield, Lock } from "lucide-react";
 import { motion } from "motion/react";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { AnimatedBackground } from "../components/AnimatedBackground";
@@ -15,58 +15,40 @@ import { AnimatedBackground } from "../components/AnimatedBackground";
 export function Pricing() {
   const plans = [
     {
-      name: "Weekly Pro Plan",
-      price: "$1.99",
-      period: "per week",
-      icon: Zap,
-      description: "Perfect for short-term needs or trying out our secure VPN service",
-      features: [
-        "Unlimited bandwidth and data",
-        "High-speed global servers in 60+ countries",
-        "Connect up to 10 devices simultaneously",
-        "Military-grade AES-256 encryption",
-        "Strict no-logs policy for privacy",
-        "24/7 customer support",
-        "Public Wi-Fi protection",
-        "Unblock restricted content",
-      ],
-      highlight: false,
-      popular: false,
-    },
-    {
       name: "Monthly Pro Plan",
       price: "$4.99",
       period: "per month",
       icon: TrendingUp,
-      description: "Most popular choice for ongoing online privacy protection",
+      description: "Flexible billing for ongoing online privacy protection",
       features: [
-        "Everything in Weekly Plan",
-        "Save 20% compared to weekly billing",
-        "Priority customer support",
-        "Advanced threat protection",
-        "Split tunneling feature",
-        "Kill switch for ultimate security",
-        "DNS leak protection",
-        "Automatic server selection",
+        "Unlimited bandwidth and data",
+        "High-speed servers in 25+ countries (30+ locations)",
+        "Use on multiple devices",
+        "Strong encryption",
+        "Strict no-logs policy for privacy",
+        "24/7 customer support",
+        "Public Wi-Fi protection",
+        "Unblock restricted content",
+        "Kill switch protection",
       ],
       highlight: true,
       popular: true,
     },
     {
       name: "Yearly Pro Plan",
-      price: "$49.99",
+      price: "$48.99",
       period: "per year",
       icon: Trophy,
-      description: "Best value for long-term VPN security and maximum savings",
+      description: "Best value when you commit for a full year",
       features: [
-        "Everything in Monthly Plan",
-        "Save 58% - Best VPN pricing deal",
-        "Dedicated account manager",
-        "Premium server access",
-        "Enhanced speed optimization",
+        "Everything in the Monthly plan",
+        "Save compared to 12 monthly renewals",
+        "Priority customer support",
+        "Advanced threat protection",
+        "Split tunneling feature",
+        "Automatic server selection",
         "Early access to new features",
-        "Extended device connections (15 devices)",
-        "Exclusive cyber security updates",
+        "Bonus perks for annual subscribers",
       ],
       highlight: false,
       popular: false,
@@ -85,9 +67,9 @@ export function Pricing() {
         "Yes! You can upgrade, downgrade, or cancel your subscription at any time through your account settings. We also offer a 30-day money-back guarantee on all plans.",
     },
     {
-      question: "How many devices can I connect?",
+      question: "Can I use Kestrel VPN on multiple devices?",
       answer:
-        "Our Weekly and Monthly plans support up to 10 simultaneous device connections, while the Yearly plan allows up to 15 devices. This covers smartphones, tablets, computers, and more.",
+        "Yes. Kestrel VPN supports multiple devices so you can stay protected on iPhone, Android, macOS, and desktop web.",
     },
     {
       question: "Do you really keep no logs?",
@@ -177,8 +159,8 @@ export function Pricing() {
 
       {/* Pricing Cards */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {plans.map((plan, index) => {
               const Icon = plan.icon;
               return (
@@ -271,11 +253,7 @@ export function Pricing() {
                         {/* CTA Button */}
                         <Link
                           to={`/checkout?plan=${
-                            plan.name.toLowerCase().includes("weekly")
-                              ? "weekly"
-                              : plan.name.toLowerCase().includes("yearly")
-                              ? "yearly"
-                              : "monthly"
+                            plan.name.toLowerCase().includes("yearly") ? "yearly" : "monthly"
                           }`}
                           className="block mb-6"
                         >
@@ -355,7 +333,7 @@ export function Pricing() {
               <div className="flex flex-wrap justify-center gap-8 items-center text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Lock className="h-5 w-5 text-primary" />
-                  <span>Military-grade encryption</span>
+                  <span>Strong encryption</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-primary" />

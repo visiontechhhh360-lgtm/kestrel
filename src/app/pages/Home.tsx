@@ -32,9 +32,7 @@ import { useRef, useState, useEffect } from "react";
 import { AppMockup } from "../components/AppMockup";
 import { RegionShowcase } from "../components/RegionShowcase";
 import { SpeedTest } from "../components/SpeedTest";
-import { ConnectionSimulator } from "../components/ConnectionSimulator";
 
-import { ServerMap } from "../components/ServerMap";
 
 // Only import components that definitely exist
 import { ScrollReveal } from "../components/ScrollReveal";
@@ -55,29 +53,29 @@ export function Home() {
     {
       title: "One-Tap Connect",
       description: "Experience ultra-fast VPN connection with a single tap",
-      image: "https://www.csoonline.com/wp-content/uploads/2024/06/vpn_network_security_by_putilich_gettyimages-1203543580_2400x1600-100837104-orig.jpg?resize=1536%2C1024&quality=50&strip=all",
+      image: "/Kestrel4.jpeg",
       features: ["Auto-connect to fastest server", "Instant connection", "Real-time speed indicator"],
       color: "from-cyan-500/20 to-blue-500/20",
     },
     {
       title: "Global Server Network",
-      description: "Access 60+ servers in 95+ countries worldwide",
-      image: "https://www.loadbalancer.org/blog/content/images/2026/01/abstract-world-map-concept-of-global-network-and-connectivity-international-data-transfer-and-cyber-technology-worldwide-tinified-12.png",
+      description: "Access 30+ server locations across 25+ countries worldwide",
+      image: "/Kestrel5.jpeg",
       features: ["Real-time server speeds", "Ping indicator", "Smart location selection"],
       color: "from-emerald-500/20 to-green-500/20",
     },
     {
       title: "Live Analytics",
       description: "Monitor your connection stats and data usage in real-time",
-      image: "https://plus.unsplash.com/premium_photo-1681487767138-ddf2d67b35c1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZGF0YSUyMGFuYWx5c2lzfGVufDB8fDB8fHww",
-      features: ["Connection speed dashboard", "Data usage tracking", "Security alerts"],
+      image: "/Kestrel3.jpeg",
+      features: ["Connection speed dashboard", "Location", "IP Address display"],
       color: "from-pink-500/20 to-rose-500/20",
     },
     {
       title: "Advanced Security",
-      description: "Military-grade encryption with advanced privacy controls",
-      image: "https://www.csoonline.com/wp-content/uploads/2023/06/cso_vpn_security_vulnerabilities_network_servers_by_funtap_gettyimages-1056953998_alert_by_200degrees_gettyimages-1146257766-100813366-orig.jpg?resize=1536%2C1024&quality=50&strip=all",
-      features: ["Kill switch protection", "DNS leak blocking", "Protocol selection"],
+      description: "Strong encryption with advanced privacy controls",
+      image: "/Kestrel2.jpeg",
+      features: ["Kill switch protection", "Auto Connect", "Protocol selection"],
       color: "from-violet-500/20 to-purple-500/20",
     },
   ];
@@ -163,7 +161,9 @@ export function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
               </motion.span>
-              
+              <span className="text-sm bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent font-semibold">
+                🔒 Trusted Worldwide
+              </span>
             </motion.div>
 
             {/* Main Heading */}
@@ -187,8 +187,8 @@ export function Home() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg sm:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed"
             >
-              BlockChain-grade encryption, lightning-fast speeds, and zero-logs guarantee. Secure your digital life with
-              Kestrel VPN — trusted by privacy advocates worldwide.
+              Industry-standard encryption, lightning-fast speeds, and a zero-logs guarantee. Secure your digital life
+              with Kestrel VPN — trusted by privacy advocates worldwide.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -244,8 +244,8 @@ export function Home() {
             >
               {[
                 { icon: Shield, text: "No-logs policy" },
-                { icon: Zap, text: "256-bit AES Encryption" },
-                { icon: Globe, text: "95+ Countries" },
+                { icon: Zap, text: "Encryption" },
+                { icon: Globe, text: "25+ Countries" },
                 { icon: Award, text: "30-day Money-back" },
               ].map((badge, index) => (
                 <motion.div
@@ -459,9 +459,9 @@ export function Home() {
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
               {[
-                { icon: Users, value: "5M+", label: "Active Users" },
-                { icon: Server, value: "60+", label: "Global Servers" },
-                { icon: Globe, value: "95+", label: "Countries" },
+                { icon: Users, value: "1M+", label: "Active Users" },
+                { icon: Server, value: "30+", label: "Server locations" },
+                { icon: Globe, value: "25+", label: "Countries" },
                 { icon: Award, value: "99.9%", label: "Uptime" },
               ].map((stat, index) => (
                 <motion.div
@@ -527,8 +527,8 @@ export function Home() {
             {[
               {
                 icon: <Shield className="h-8 w-8" />,
-                title: "Military-Grade Encryption",
-                description: "AES-256 encryption with perfect forward secrecy protection.",
+                title: "Strong Encryption",
+                description: "Strong encryption with perfect forward secrecy protection.",
                 gradient: "from-cyan-500 to-blue-500",
               },
               {
@@ -546,7 +546,7 @@ export function Home() {
               {
                 icon: <Globe className="h-8 w-8" />,
                 title: "Global Coverage",
-                description: "60+ servers across 95+ countries for unrestricted access.",
+                description: "30+ locations across 25+ countries for unrestricted access.",
                 gradient: "from-pink-500 to-rose-500",
               },
               {
@@ -558,7 +558,7 @@ export function Home() {
               {
                 icon: <Laptop className="h-8 w-8" />,
                 title: "Multi-Device Support",
-                description: "Protect 10+ devices simultaneously with one subscription.",
+                description: "Use Kestrel VPN on multiple devices across iPhone, Android, macOS, and desktop web.",
                 gradient: "from-orange-500 to-yellow-500",
               },
             ].map((feature, index) => (
@@ -629,7 +629,7 @@ export function Home() {
               {
                 step: "01",
                 title: "Choose Your Plan",
-                description: "Pick the perfect plan for your needs. All plans include money-back guarantee.",
+                description: "Pick the perfect plan for your needs. All plans include our 30-day money-back guarantee.",
                 icon: <TrendingUp className="h-12 w-12" />,
                 color: "from-cyan-500 to-blue-500",
               },
@@ -694,7 +694,72 @@ export function Home() {
         </div>
       </section>
 
+      {/* Testimonials */}
+      <section className="py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <motion.div
+            className="absolute top-1/2 right-0 w-96 h-96 bg-gradient-to-l from-rose-500/15 to-pink-500/10 rounded-full mix-blend-screen filter blur-3xl"
+            animate={{ scale: [1, 1.3, 1], rotate: [0, -180, 0] }}
+            transition={{ duration: 20, repeat: Infinity }}
+          />
+        </div>
 
+        <div className="max-w-7xl mx-auto relative z-10">
+          <ScrollReveal className="text-center mb-20">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6">
+              Loved by Millions Worldwide
+            </h2>
+            <p className="text-lg text-slate-400 max-w-3xl mx-auto">
+              See what our users say about their experience with Kestrel VPN.
+            </p>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Alex Morgan",
+                role: "Security Analyst",
+                review: "Kestrel VPN gives me peace of mind whenever I'm traveling or using public Wi-Fi.",
+              },
+              {
+                name: "Sarah Kim",
+                role: "Digital Nomad",
+                review: "Super fast speeds and incredibly easy to use. Perfect for streaming and remote work.",
+              },
+              {
+                name: "David Chen",
+                role: "Software Engineer",
+                review: "The best VPN I've used. Reliable, fast, and the privacy features are top tier.",
+              },
+            ].map((t, index) => (
+              <motion.div
+                key={t.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card className="p-8 bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700 hover:border-slate-600 transition-all backdrop-blur-sm">
+                  <div className="flex items-center gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                    ))}
+                  </div>
+
+                  <p className="text-slate-300 mb-6 leading-relaxed">
+                    "{t.review}"
+                  </p>
+
+                  <div>
+                    <div className="text-white font-semibold">{t.name}</div>
+                    <div className="text-sm text-slate-400">{t.role}</div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
        {/* App Mockup Section */}
       <AppMockup />
@@ -710,17 +775,14 @@ export function Home() {
             </p>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 lg:grid-cols-1 ">
+          <div className="max-w-3xl mx-auto">
             <ScrollReveal delay={0.1}>
               <SpeedTest />
             </ScrollReveal>
-            
           </div>
         </div>
       </section>
-  {/* Server Map */}
-      <ServerMap />
-    
+ 
 
       {/* Region Showcase */}
       <RegionShowcase />
@@ -744,14 +806,13 @@ export function Home() {
               Available on all major platforms
             </p>
           </ScrollReveal>
-<div className="max-w-5xl mx-auto">
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { name: "Windows", icon: Download, platform: "Windows 10 & 11", color: "from-blue-500 to-cyan-500" },
               { name: "macOS", icon: Apple, platform: "10.14+", color: "from-gray-500 to-slate-500" },
               { name: "iOS", icon: Apple, platform: "iOS 13+", color: "from-black to-gray-700" },
-
+              { name: "Android", icon: Download, platform: "Android 8+", color: "from-green-500 to-emerald-500" },
             ].map((download, index) => (
               <motion.div
                 key={download.name}
@@ -793,7 +854,6 @@ export function Home() {
               </motion.div>
             ))}
           </div>
-        </div>
         </div>
       </section>
 

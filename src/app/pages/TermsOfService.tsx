@@ -38,8 +38,8 @@ export function TermsOfService() {
               <p className="text-muted-foreground mb-6">
                 Kestrel VPN provides a secure VPN service designed to protect your online privacy,
                 encrypt your internet connection, and allow you to access content through our high-speed
-                global servers located in 60+ countries. Our Service includes military-grade encryption,
-                a strict no-logs policy, public Wi-Fi protection, and features to unblock restricted
+                global servers in 25+ countries. Our Service includes strong encryption, a strict no-logs
+                policy, public Wi-Fi protection, and features to unblock restricted
                 content while maintaining your online anonymity.
               </p>
 
@@ -121,9 +121,8 @@ export function TermsOfService() {
                 Kestrel VPN offers the following subscription plans:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground mb-6 space-y-2">
-                <li>Weekly Pro Plan: $1.99 per week</li>
                 <li>Monthly Pro Plan: $4.99 per month</li>
-                <li>Yearly Pro Plan: $49.99 per year</li>
+                <li>Yearly Pro Plan: $48.99 per year</li>
               </ul>
 
               <h3 className="text-xl font-semibold text-foreground mb-3">6.2 Payment Terms</h3>
@@ -204,7 +203,7 @@ export function TermsOfService() {
                 EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, KESTREL VPN DISCLAIMS ALL
                 WARRANTIES, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
                 FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE SERVICE WILL
-                BE UNINTERRUPTED, ERROR-FREE, OR COMPLETELY SECURE. WHILE WE IMPLEMENT MILITARY-GRADE
+                BE UNINTERRUPTED, ERROR-FREE, OR COMPLETELY SECURE. WHILE WE IMPLEMENT INDUSTRY-STANDARD
                 ENCRYPTION AND SECURITY MEASURES, NO SYSTEM IS ENTIRELY INVULNERABLE.
               </p>
 
@@ -299,6 +298,7 @@ export function TermsOfService() {
                     support@kestrelvpn.com
                   </a>
                 </li>
+                <li>Phone: 0329 0760191</li>
                 <li>Address: 123 Privacy Boulevard, Secure City, SC 12345, United States</li>
               </ul>
 

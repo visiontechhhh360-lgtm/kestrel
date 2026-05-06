@@ -77,9 +77,9 @@ export function NoLogsPolicy() {
                 <div>
                   <h3 className="font-semibold text-foreground mb-1">DNS Queries</h3>
                   <p className="text-muted-foreground text-sm">
-                    DNS queries reveal the websites you're trying to access. We do not log DNS requests,
-                    ensuring that your destination websites remain private. Our DNS leak protection
-                    ensures queries never leave our encrypted tunnel.
+                    DNS queries reveal the websites you&apos;re trying to access. We do not log DNS
+                    requests, ensuring that your destination websites remain private. Queries are handled
+                    inside our encrypted tunnel.
                   </p>
                 </div>
               </div>
@@ -118,7 +118,7 @@ export function NoLogsPolicy() {
                   <p className="text-muted-foreground text-sm">
                     We never inspect, monitor, or log the content of your internet traffic. Whether
                     you're streaming, downloading, or browsing, your data remains encrypted and private
-                    with our military-grade encryption.
+                    with strong encryption.
                   </p>
                 </div>
               </div>
@@ -279,12 +279,12 @@ export function NoLogsPolicy() {
 
               <div>
                 <h3 className="text-xl font-semibold text-foreground mb-3">
-                  3. Military-Grade Encryption
+                  3. Strong Encryption
                 </h3>
                 <p className="text-muted-foreground">
-                  All traffic passing through our VPN is encrypted using AES-256 encryption, the same
-                  standard used by governments and militaries worldwide. Even if someone intercepted your
-                  data, it would be indecipherable without the encryption keys.
+                  All traffic passing through our VPN is encrypted using industry-standard protocols.
+                  Even if someone intercepted your data, it would be indecipherable without the encryption
+                  keys.
                 </p>
               </div>
 

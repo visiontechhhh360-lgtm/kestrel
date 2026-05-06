@@ -31,23 +31,23 @@ export function Helmet() {
       document.title = "Kestrel VPN - Fast & Secure VPN Service for Privacy & Freedom";
       setMetaTag(
         "description",
-        "Experience the fastest and most secure VPN service with Kestrel VPN. Protect your online privacy with military-grade encryption, no-logs policy, and high-speed global servers. Unblock restricted content and secure public Wi-Fi connections."
+        "Experience the fastest and most secure VPN service with Kestrel VPN. Protect your online privacy with strong encryption, a no-logs policy, and high-speed global servers. Unblock restricted content and secure public Wi-Fi connections."
       );
       setOgTag("og:title", "Kestrel VPN - Fast & Secure VPN Service for Privacy & Freedom");
       setOgTag(
         "og:description",
-        "Experience the fastest and most secure VPN service with Kestrel VPN. Protect your online privacy with military-grade encryption, no-logs policy, and high-speed global servers."
+        "Experience the fastest and most secure VPN service with Kestrel VPN. Protect your online privacy with strong encryption, a no-logs policy, and high-speed global servers."
       );
     } else if (location.pathname === "/pricing") {
       document.title = "VPN Pricing Plans - Affordable & Flexible | Kestrel VPN";
       setMetaTag(
         "description",
-        "Choose from our flexible VPN pricing plans: Weekly Pro Plan at $1.99, Monthly Pro Plan at $4.99, or save with our Yearly Pro Plan at $49.99. Get fast VPN connection, unlimited bandwidth, and global server access with all plans."
+        "Choose Monthly Pro at $4.99/month or Yearly Pro at $48.99/year. Get fast VPN connection, unlimited bandwidth, and global server access with every plan."
       );
       setOgTag("og:title", "VPN Pricing Plans - Affordable & Flexible | Kestrel VPN");
       setOgTag(
         "og:description",
-        "Choose from our flexible VPN pricing plans: Weekly, Monthly, or Yearly. Get fast VPN connection, unlimited bandwidth, and global server access."
+        "Monthly or yearly VPN plans with fast connections, unlimited bandwidth, and global server access."
       );
     } else if (location.pathname === "/contact") {
       document.title = "Contact Us - Get VPN Support & Help | Kestrel VPN";
@@ -64,12 +64,12 @@ export function Helmet() {
       document.title = "Secure Checkout - Complete Your VPN Purchase | Kestrel VPN";
       setMetaTag(
         "description",
-        "Complete your secure VPN service purchase with Kestrel VPN. Military-grade encrypted checkout for our fast VPN connection plans. Choose weekly, monthly, or yearly subscription."
+        "Complete your secure VPN purchase with Kestrel VPN. Encrypted checkout for monthly or yearly subscriptions."
       );
       setOgTag("og:title", "Secure Checkout - Complete Your VPN Purchase | Kestrel VPN");
       setOgTag(
         "og:description",
-        "Complete your secure VPN service purchase with military-grade encrypted checkout."
+        "Complete your secure VPN purchase with encrypted checkout."
       );
     } else if (location.pathname === "/privacy-policy") {
       document.title = "Privacy Policy - How We Protect Your Data | Kestrel VPN";
