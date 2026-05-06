@@ -892,7 +892,7 @@ export function Home() {
               </span>
             </h2>
             <p className="text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-              Join 5M+ users worldwide who trust Kestrel VPN. 30-day money-back guarantee. No questions asked.
+              Join 1M+ users worldwide who trust Kestrel VPN. 30-day money-back guarantee. No questions asked.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
