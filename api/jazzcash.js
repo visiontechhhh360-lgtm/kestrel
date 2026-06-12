@@ -29,10 +29,9 @@ function generateHash(params) {
   return crypto.createHmac('sha256', INTEGRITY_SALT).update(str).digest('hex').toUpperCase();
 }
 
-// Convert MM/YY → MMYYYY (JazzCash format)
+// Convert MM/YY → MMYY (JazzCash expects 4-digit expiry, e.g. "1226" for 12/26)
 function formatExpiry(mmyy) {
-  const [mm, yy] = mmyy.replace(/\s/g, '').split('/');
-  return `${mm}20${yy}`;
+  return mmyy.replace(/[/\s]/g, '');
 }
 
 export default function handler(req, res) {
