@@ -6,35 +6,42 @@ import { CheckCircle, XCircle, Clock } from "lucide-react";
 
 type PaymentStatus = "success" | "failure" | "pending";
 
-// JazzCash response codes: "000" = success, anything else = failure/pending
-const SUCCESS_CODE = "000";
-
 export function PaymentReturn() {
   const navigate = useNavigate();
-  const [status, setStatus] = useState<PaymentStatus>("pending");
-  const [txnRef, setTxnRef] = useState("");
+  const [status, setStatus]               = useState<PaymentStatus>("pending");
+  const [txnRef, setTxnRef]               = useState("");
+  const [responseCode, setResponseCode]   = useState("");
   const [responseMessage, setResponseMessage] = useState("");
+  const [amount, setAmount]               = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const responseCode = params.get("pp_ResponseCode");
-    const txnRefNo = params.get("pp_TxnRefNo") || "";
-    const responseDesc = params.get("pp_ResponseMessage") || "";
+    const code    = params.get("pp_ResponseCode")    || "";
+    const message = params.get("pp_ResponseMessage") || "";
+    const ref     = params.get("pp_TxnRefNo")        || "";
+    const amt     = params.get("pp_Amount")          || "";
 
-    setTxnRef(txnRefNo);
-    setResponseMessage(responseDesc);
+    setResponseCode(code);
+    setResponseMessage(message);
+    setTxnRef(ref);
+    setAmount(amt);
 
-    if (responseCode === SUCCESS_CODE) {
+    if (code === "000") {
       setStatus("success");
-    } else if (responseCode) {
+    } else if (code) {
       setStatus("failure");
     }
-    // If no params, leave as "pending" (user may have landed here directly)
   }, []);
+
+  // Format paisa → readable amount
+  const formattedAmount = amount
+    ? `PKR ${(parseInt(amount, 10) / 100).toFixed(2)}`
+    : "";
 
   return (
     <div className="w-full min-h-[80vh] flex items-center justify-center px-4 py-16">
       <Card className="max-w-lg w-full p-8 text-center border-primary/20">
+
         {status === "success" && (
           <>
             <div className="flex justify-center mb-6">
@@ -58,9 +65,14 @@ export function PaymentReturn() {
               </div>
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">Payment Failed</h1>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-muted-foreground mb-2">
               {responseMessage || "Your payment could not be processed. Please try again."}
             </p>
+            {responseCode && (
+              <p className="text-xs text-muted-foreground mb-4">
+                Error code: <span className="font-mono">{responseCode}</span>
+              </p>
+            )}
           </>
         )}
 
@@ -73,34 +85,33 @@ export function PaymentReturn() {
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">Verifying Payment</h1>
             <p className="text-muted-foreground mb-6">
-              We are confirming your transaction with JazzCash. This may take a moment.
+              We are confirming your transaction. This may take a moment.
             </p>
           </>
         )}
 
-        {txnRef && (
-          <div className="bg-card/50 rounded-lg p-4 mb-6 text-sm text-left">
-            <p className="text-muted-foreground">
-              Transaction Reference: <span className="text-foreground font-mono">{txnRef}</span>
-            </p>
+        {/* Transaction details */}
+        {(txnRef || formattedAmount) && (
+          <div className="bg-card/50 rounded-lg p-4 mb-6 text-sm text-left space-y-1">
+            {txnRef && (
+              <p className="text-muted-foreground">
+                Reference: <span className="text-foreground font-mono">{txnRef}</span>
+              </p>
+            )}
+            {formattedAmount && (
+              <p className="text-muted-foreground">
+                Amount: <span className="text-foreground">{formattedAmount}</span>
+              </p>
+            )}
           </div>
         )}
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <Button
-            size="lg"
-            className="flex-1 bg-primary hover:bg-primary/90"
-            onClick={() => navigate("/")}
-          >
+          <Button size="lg" className="flex-1 bg-primary hover:bg-primary/90" onClick={() => navigate("/")}>
             Return Home
           </Button>
           {status === "failure" && (
-            <Button
-              size="lg"
-              variant="outline"
-              className="flex-1"
-              onClick={() => navigate("/checkout")}
-            >
+            <Button size="lg" variant="outline" className="flex-1" onClick={() => navigate("/checkout")}>
               Try Again
             </Button>
           )}

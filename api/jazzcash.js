@@ -71,7 +71,6 @@ export default function handler(req, res) {
     pp_CustomerCardNameOnCard: cardName,
     pp_CustomerCardNumber:     cardNumber.replace(/\s/g, ''),
     pp_CustomerEmail:          email,
-    pp_CustomerName:           `${firstName} ${lastName}`.trim(),
     pp_Description:            selected.name,
     pp_Language:               'EN',
     pp_MerchantID:             MERCHANT_ID,
