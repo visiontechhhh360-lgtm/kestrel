@@ -29,13 +29,7 @@ function generateHash(params) {
   return crypto.createHmac('sha256', INTEGRITY_SALT).update(str).digest('hex').toUpperCase();
 }
 
-// Convert MM/YY → MMYY (JazzCash expects 4-digit expiry, e.g. "1226" for 12/26)
-function formatExpiry(mmyy) {
-  return mmyy.replace(/[/\s]/g, '');
-}
-
 export default function handler(req, res) {
-  // CORS headers for local dev
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -43,47 +37,44 @@ export default function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { plan, firstName, lastName, email, cardNumber, cardExpiry, cardCvv, cardName } = req.body || {};
+  const { plan, firstName, lastName, email } = req.body || {};
 
   const selected = PLANS[plan];
   if (!selected) return res.status(400).json({ error: 'Invalid plan' });
 
-  // Basic server-side validation
-  if (!email || !cardNumber || !cardExpiry || !cardCvv || !cardName) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
+  if (!email) return res.status(400).json({ error: 'Missing required fields' });
 
   const now    = new Date();
   const expiry = new Date(now.getTime() + 30 * 60 * 1000);
 
-  const txnRefNo  = `T${formatDateTime(now)}${Math.floor(Math.random() * 9000 + 1000)}`;
-  const amount    = String(Math.round(selected.price * 100)); // paisa
+  const txnRefNo = `T${formatDateTime(now)}${Math.floor(Math.random() * 9000 + 1000)}`;
+  const amount   = String(Math.round(selected.price * 100));
 
   const appUrl    = process.env.APP_URL || `https://${process.env.VERCEL_URL}`;
   const returnUrl = `${appUrl}/api/payment-callback`;
 
+  // Card details are NOT sent here — the hosted checkout page collects them
+  // securely on JazzCash's end (pp_TxnType CC shows their card entry form).
   const params = {
-    pp_Amount:                 amount,
-    pp_BillReference:          'KestrelVPN',
-    pp_CustomerCardCvv:        cardCvv,
-    pp_CustomerCardExpiryDate: formatExpiry(cardExpiry),
-    pp_CustomerCardNameOnCard: cardName,
-    pp_CustomerCardNumber:     cardNumber.replace(/\s/g, ''),
-    pp_CustomerEmail:          email,
-    pp_Description:            selected.name,
-    pp_Language:               'EN',
-    pp_MerchantID:             MERCHANT_ID,
-    pp_Password:               PASSWORD,
-    pp_ReturnURL:              returnUrl,
-    pp_TxnCurrency:            'PKR',
-    pp_TxnDateTime:            formatDateTime(now),
-    pp_TxnExpiryDateTime:      formatDateTime(expiry),
-    pp_TxnRefNo:               txnRefNo,
-    pp_TxnType:                'CC',
-    pp_Version:                '1.1',
+    pp_Amount:            amount,
+    pp_BillReference:     'KestrelVPN',
+    pp_CustomerEmail:     email,
+    pp_Description:       selected.name,
+    pp_Language:          'EN',
+    pp_MerchantID:        MERCHANT_ID,
+    pp_Password:          PASSWORD,
+    pp_ReturnURL:         returnUrl,
+    pp_TxnCurrency:       'PKR',
+    pp_TxnDateTime:       formatDateTime(now),
+    pp_TxnExpiryDateTime: formatDateTime(expiry),
+    pp_TxnRefNo:          txnRefNo,
+    pp_TxnType:           'CC',
+    pp_Version:           '1.1',
   };
 
   params.pp_SecureHash = generateHash(params);
+
+  console.log('[jazzcash] txnRef:', txnRefNo, 'amount:', amount, 'returnUrl:', returnUrl);
 
   return res.status(200).json({ gatewayUrl: GATEWAY_URL, params });
 }
