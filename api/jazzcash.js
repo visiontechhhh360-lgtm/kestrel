@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     pp_Amount:            amount,
     pp_BillReference:     'KestrelVPN',
     pp_CustomerEmail:     email,
-    pp_Description:       `${selected.name} ($${selected.price})`,
+    pp_Description:       selected.name,
     pp_Language:          'EN',
     pp_MerchantID:        MERCHANT_ID,
     pp_Password:          PASSWORD,
