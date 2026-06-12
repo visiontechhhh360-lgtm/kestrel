@@ -5,9 +5,8 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card } from "../components/ui/card";
 import { Checkbox } from "../components/ui/checkbox";
-import { Lock, Shield, User, CreditCard, RefreshCw, Globe } from "lucide-react";
+import { Lock, Shield, User, CreditCard, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
-import { submitJazzCashForm } from "../utils/jazzcash";
 
 const PLANS = {
   monthly: { name: "Monthly Pro Plan", price: 4.99,  period: "month" },
@@ -126,9 +125,17 @@ export function Checkout() {
         throw new Error(err.error || "Payment initiation failed");
       }
 
-      const { gatewayUrl, params, conversion } = await res.json();
-      if (conversion?.rate) setRate(conversion.rate);
-      submitJazzCashForm(gatewayUrl, params);
+      const data = await res.json();
+      if (data.conversion?.rate) setRate(data.conversion.rate);
+
+      const qs = new URLSearchParams({
+        pp_ResponseCode:    data.responseCode    || '',
+        pp_ResponseMessage: data.responseMessage || '',
+        pp_TxnRefNo:        data.txnRefNo        || '',
+        pp_Amount:          data.amount          || '',
+      }).toString();
+
+      navigate(`/payment-return?${qs}`);
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setIsProcessing(false);
@@ -263,19 +270,6 @@ export function Checkout() {
                       </div>
                     </div>
 
-                    {/* Currency charge note */}
-                    {pkrEstimate && (
-                      <div className="flex items-start gap-2 bg-primary/5 border border-primary/15 rounded-lg px-4 py-3 text-sm">
-                        <Globe className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                        <p className="text-muted-foreground">
-                          Your card will be charged{" "}
-                          <span className="text-foreground font-semibold">PKR {pkrEstimate.toLocaleString()}</span>
-                          {" "}(equivalent to <span className="text-foreground font-semibold">${selectedPlan.price}</span> at today's rate).
-                          {" "}International cards are accepted — your bank converts to your local currency automatically.
-                        </p>
-                      </div>
-                    )}
-
                     <div className="flex gap-3 pt-1">
                       <Button type="button" variant="outline" size="lg" className="flex-1"
                         onClick={() => { setErrors({}); setStep(1); }} disabled={isProcessing}>
@@ -330,15 +324,6 @@ export function Checkout() {
                     </div>
                   </div>
                 </div>
-
-                {rate && (
-                  <div className="bg-card/50 rounded-lg px-3 py-2 mb-4 text-xs text-muted-foreground">
-                    <p>1 USD = PKR {rate.toFixed(2)} <span className="opacity-60">(live rate)</span></p>
-                    <p className="mt-0.5 text-foreground/70">
-                      Pakistani users pay in PKR. International users pay in PKR — your bank converts it to your local currency.
-                    </p>
-                  </div>
-                )}
 
                 <div className="bg-card/50 rounded-lg p-4 mb-4">
                   <div className="flex items-center gap-2 text-primary mb-2">
