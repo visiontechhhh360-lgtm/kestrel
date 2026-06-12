@@ -5,32 +5,37 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card } from "../components/ui/card";
 import { Checkbox } from "../components/ui/checkbox";
-import { Lock, Shield, User, CheckCircle, ArrowRight } from "lucide-react";
+import { Lock, Shield, User, ArrowRight, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { submitJazzCashForm } from "../utils/jazzcash";
 
 const PLANS = {
-  monthly: { name: "Monthly Pro Plan", price: 4.99, period: "month" },
-  yearly:  { name: "Yearly Pro Plan",  price: 48.99, period: "year" },
+  monthly: { name: "Monthly Pro Plan", price: 4.99,  period: "month" },
+  yearly:  { name: "Yearly Pro Plan",  price: 48.99, period: "year"  },
 };
 
 export function Checkout() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const planKey = searchParams.get("plan") === "yearly" ? "yearly" : "monthly";
+  const planKey      = searchParams.get("plan") === "yearly" ? "yearly" : "monthly";
   const selectedPlan = PLANS[planKey];
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    confirmEmail: "",
-    agreeTerms: false,
+  const [rate, setRate]                 = useState<number | null>(null);
+  const [formData, setFormData]         = useState({
+    firstName: "", lastName: "", email: "", confirmEmail: "", agreeTerms: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  // Fetch live USD → PKR rate for display
+  useEffect(() => {
+    fetch("https://open.er-api.com/v6/latest/USD")
+      .then(r => r.json())
+      .then(d => { if (d.rates?.PKR) setRate(d.rates.PKR); })
+      .catch(() => {}); // non-critical — hides quietly if unavailable
+  }, []);
+
+  const pkrEstimate = rate ? Math.round(selectedPlan.price * rate) : null;
 
   function validate() {
     const e: Record<string, string> = {};
@@ -55,14 +60,13 @@ export function Checkout() {
 
   async function handleProceedToPayment() {
     if (!validate()) return;
-
     setIsProcessing(true);
     try {
       const res = await fetch("/api/jazzcash", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          plan: planKey,
+          plan:      planKey,
           firstName: formData.firstName,
           lastName:  formData.lastName,
           email:     formData.email,
@@ -74,8 +78,13 @@ export function Checkout() {
         throw new Error(err.error || "Payment initiation failed");
       }
 
-      const { gatewayUrl, params } = await res.json();
+      const { gatewayUrl, params, conversion } = await res.json();
+
+      // Update the displayed rate with the one actually used for the charge
+      if (conversion?.rate) setRate(conversion.rate);
+
       submitJazzCashForm(gatewayUrl, params);
+      // Browser navigates away — no further state updates needed
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setIsProcessing(false);
@@ -164,15 +173,16 @@ export function Checkout() {
                     onClick={handleProceedToPayment}
                     disabled={isProcessing}
                   >
-                    {isProcessing ? "Redirecting to payment…" : (
-                      <>Proceed to Payment <ArrowRight className="h-4 w-4" /></>
-                    )}
+                    {isProcessing
+                      ? "Redirecting to payment…"
+                      : <><span>Proceed to Payment</span><ArrowRight className="h-4 w-4" /></>
+                    }
                   </Button>
 
-                  <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                    <Lock className="h-3.5 w-3.5" />
-                    <span>You will be redirected to a secure payment page to enter your card details</span>
-                  </div>
+                  <p className="text-xs text-muted-foreground text-center">
+                    <Lock className="h-3 w-3 inline mr-1" />
+                    You will be redirected to a secure page to enter your card details
+                  </p>
                 </div>
               </Card>
             </div>
@@ -181,6 +191,7 @@ export function Checkout() {
             <div className="lg:col-span-1">
               <Card className="p-6 border-primary/20 sticky top-20">
                 <h3 className="font-bold mb-4">Order Summary</h3>
+
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Plan</span>
@@ -190,13 +201,35 @@ export function Checkout() {
                     <span className="text-muted-foreground">Billing</span>
                     <span>${selectedPlan.price}/{selectedPlan.period}</span>
                   </div>
+
                   <div className="border-t border-border pt-3">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-start">
                       <span className="font-semibold">Total</span>
-                      <span className="text-accent font-bold text-xl">${selectedPlan.price}</span>
+                      <div className="text-right">
+                        <p className="text-accent font-bold text-xl">${selectedPlan.price}</p>
+                        {pkrEstimate ? (
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            ≈ PKR {pkrEstimate.toLocaleString()}
+                            <span className="ml-1 opacity-60">(live rate)</span>
+                          </p>
+                        ) : (
+                          <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1 justify-end">
+                            <RefreshCw className="h-3 w-3 animate-spin" />
+                            fetching rate…
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                {/* Exchange rate note */}
+                {rate && (
+                  <div className="bg-primary/5 border border-primary/10 rounded-lg px-3 py-2 mb-4 text-xs text-muted-foreground">
+                    1 USD = PKR {rate.toFixed(2)} today.
+                    You will be charged PKR {pkrEstimate?.toLocaleString()} at checkout.
+                  </div>
+                )}
 
                 <div className="bg-card/50 rounded-lg p-4 mb-4">
                   <div className="flex items-center gap-2 text-primary mb-2">
