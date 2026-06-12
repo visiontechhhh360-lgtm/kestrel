@@ -25,7 +25,7 @@ export function Checkout() {
   const [rate, setRate]             = useState<number | null>(null);
 
   const [details, setDetails] = useState({
-    firstName: "", lastName: "", email: "", confirmEmail: "", agreeTerms: false,
+    firstName: "", lastName: "", email: "", agreeTerms: false,
   });
   const [card, setCard] = useState({
     cardNumber: "", cardName: "", cardExpiry: "", cardCvv: "",
@@ -53,9 +53,6 @@ export function Checkout() {
     if (!details.email.trim())        e.email        = "Email is required";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email))
                                       e.email        = "Enter a valid email address";
-    if (!details.confirmEmail.trim()) e.confirmEmail = "Please confirm your email";
-    else if (details.email !== details.confirmEmail)
-                                      e.confirmEmail = "Emails do not match";
     if (!details.agreeTerms)          e.agreeTerms   = "You must agree to the terms";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -200,13 +197,6 @@ export function Checkout() {
                         className={`mt-1 ${errors.email ? "border-destructive" : ""}`} />
                       {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
                       <p className="text-xs text-muted-foreground mt-1">Account credentials will be sent here</p>
-                    </div>
-                    <div>
-                      <Label htmlFor="confirmEmail">Confirm Email *</Label>
-                      <Input id="confirmEmail" name="confirmEmail" type="email" value={details.confirmEmail}
-                        onChange={handleDetailChange} placeholder="john@example.com"
-                        className={`mt-1 ${errors.confirmEmail ? "border-destructive" : ""}`} />
-                      {errors.confirmEmail && <p className="text-sm text-destructive mt-1">{errors.confirmEmail}</p>}
                     </div>
                     <div className="flex items-start gap-3">
                       <Checkbox id="agreeTerms" checked={details.agreeTerms}

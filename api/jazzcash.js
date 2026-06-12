@@ -68,7 +68,7 @@ export default async function handler(req, res) {
   const pkrAmount = Math.round(selected.price * rate);
   const amount    = String(pkrAmount * 100); // paisa
 
-  const appUrl    = process.env.APP_URL || `https://${process.env.VERCEL_URL}`;
+  const appUrl    = (process.env.APP_URL || `https://${process.env.VERCEL_URL}`).replace(/\/+$/, '');
   const returnUrl = `${appUrl}/api/payment-callback`;
 
   const params = {
