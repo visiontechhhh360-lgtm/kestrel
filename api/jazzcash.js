@@ -25,10 +25,9 @@ function generateHash(params) {
   return crypto.createHmac('sha256', INTEGRITY_SALT).update(str).digest('hex').toUpperCase();
 }
 
-// MM/YY  →  MM/YYYY  (e.g. "12/26" → "12/2026")
+// Keep MM/YY exactly as shown on the card (e.g. "12/26")
 function formatExpiry(mmyy) {
-  const [mm, yy] = mmyy.replace(/\s/g, '').split('/');
-  return `${mm}/20${yy}`;
+  return mmyy.trim();
 }
 
 async function getUsdToPkrRate() {
