@@ -5,7 +5,7 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card } from "../components/ui/card";
 import { Checkbox } from "../components/ui/checkbox";
-import { Lock, Shield, User, ArrowRight, RefreshCw } from "lucide-react";
+import { Lock, Shield, User, CreditCard, RefreshCw, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { submitJazzCashForm } from "../utils/jazzcash";
 
@@ -15,61 +15,112 @@ const PLANS = {
 };
 
 export function Checkout() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const planKey      = searchParams.get("plan") === "yearly" ? "yearly" : "monthly";
-  const selectedPlan = PLANS[planKey];
+  const [searchParams]  = useSearchParams();
+  const navigate        = useNavigate();
+  const planKey         = searchParams.get("plan") === "yearly" ? "yearly" : "monthly";
+  const selectedPlan    = PLANS[planKey];
 
+  const [step, setStep]             = useState<1 | 2>(1);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [rate, setRate]                 = useState<number | null>(null);
-  const [formData, setFormData]         = useState({
+  const [rate, setRate]             = useState<number | null>(null);
+
+  const [details, setDetails] = useState({
     firstName: "", lastName: "", email: "", confirmEmail: "", agreeTerms: false,
+  });
+  const [card, setCard] = useState({
+    cardNumber: "", cardName: "", cardExpiry: "", cardCvv: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Fetch live USD → PKR rate for display
+  useEffect(() => { window.scrollTo(0, 0); }, [step]);
+
+  // Live exchange rate for display
   useEffect(() => {
     fetch("https://open.er-api.com/v6/latest/USD")
       .then(r => r.json())
       .then(d => { if (d.rates?.PKR) setRate(d.rates.PKR); })
-      .catch(() => {}); // non-critical — hides quietly if unavailable
+      .catch(() => {});
   }, []);
 
   const pkrEstimate = rate ? Math.round(selectedPlan.price * rate) : null;
 
-  function validate() {
+  // ── Validation ────────────────────────────────────────────────────────────
+
+  function validateDetails() {
     const e: Record<string, string> = {};
-    if (!formData.firstName.trim())    e.firstName    = "First name is required";
-    if (!formData.lastName.trim())     e.lastName     = "Last name is required";
-    if (!formData.email.trim())        e.email        = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-                                       e.email        = "Enter a valid email address";
-    if (!formData.confirmEmail.trim()) e.confirmEmail = "Please confirm your email";
-    else if (formData.email !== formData.confirmEmail)
-                                       e.confirmEmail = "Emails do not match";
-    if (!formData.agreeTerms)          e.agreeTerms   = "You must agree to the terms";
+    if (!details.firstName.trim())    e.firstName    = "First name is required";
+    if (!details.lastName.trim())     e.lastName     = "Last name is required";
+    if (!details.email.trim())        e.email        = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email))
+                                      e.email        = "Enter a valid email address";
+    if (!details.confirmEmail.trim()) e.confirmEmail = "Please confirm your email";
+    else if (details.email !== details.confirmEmail)
+                                      e.confirmEmail = "Emails do not match";
+    if (!details.agreeTerms)          e.agreeTerms   = "You must agree to the terms";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function validateCard() {
+    const e: Record<string, string> = {};
+    const num = card.cardNumber.replace(/\s/g, "");
+    if (!num)                              e.cardNumber = "Card number is required";
+    else if (!/^\d{13,19}$/.test(num))    e.cardNumber = "Enter a valid card number";
+    if (!card.cardName.trim())            e.cardName   = "Name on card is required";
+    if (!card.cardExpiry)                 e.cardExpiry = "Expiry date is required";
+    else if (!/^\d{2}\/\d{2}$/.test(card.cardExpiry)) e.cardExpiry = "Use MM/YY format";
+    else {
+      const [mm, yy] = card.cardExpiry.split("/").map(Number);
+      const now = new Date();
+      if (mm < 1 || mm > 12)            e.cardExpiry = "Invalid month";
+      else if (2000 + yy < now.getFullYear() ||
+        (2000 + yy === now.getFullYear() && mm < now.getMonth() + 1))
+                                         e.cardExpiry = "Card has expired";
+    }
+    if (!card.cardCvv)                   e.cardCvv = "CVV is required";
+    else if (!/^\d{3,4}$/.test(card.cardCvv)) e.cardCvv = "Enter a valid CVV";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
+
+  // ── Input handlers ────────────────────────────────────────────────────────
+
+  function handleDetailChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setDetails(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
   }
 
-  async function handleProceedToPayment() {
-    if (!validate()) return;
+  function handleCardChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    let v = value;
+    if (name === "cardNumber") v = value.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim().slice(0, 19);
+    if (name === "cardExpiry") v = value.replace(/\D/g, "").replace(/^(\d{2})(\d)/, "$1/$2").slice(0, 5);
+    if (name === "cardCvv")    v = value.replace(/\D/g, "").slice(0, 4);
+    setCard(prev => ({ ...prev, [name]: v }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
+  }
+
+  function handleContinue() {
+    if (validateDetails()) { setErrors({}); setStep(2); }
+  }
+
+  async function handlePayNow() {
+    if (!validateCard()) return;
     setIsProcessing(true);
     try {
       const res = await fetch("/api/jazzcash", {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          plan:      planKey,
-          firstName: formData.firstName,
-          lastName:  formData.lastName,
-          email:     formData.email,
+        body:    JSON.stringify({
+          plan:       planKey,
+          firstName:  details.firstName,
+          lastName:   details.lastName,
+          email:      details.email,
+          cardNumber: card.cardNumber,
+          cardExpiry: card.cardExpiry,
+          cardCvv:    card.cardCvv,
+          cardName:   card.cardName,
         }),
       });
 
@@ -79,21 +130,18 @@ export function Checkout() {
       }
 
       const { gatewayUrl, params, conversion } = await res.json();
-
-      // Update the displayed rate with the one actually used for the charge
       if (conversion?.rate) setRate(conversion.rate);
-
       submitJazzCashForm(gatewayUrl, params);
-      // Browser navigates away — no further state updates needed
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setIsProcessing(false);
     }
   }
 
+  // ── Layout ────────────────────────────────────────────────────────────────
+
   return (
     <div className="w-full">
-      {/* Hero */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/10 via-transparent to-accent/10">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl font-bold mb-4">Secure Checkout</h1>
@@ -105,94 +153,167 @@ export function Checkout() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            {/* Form */}
-            <div className="lg:col-span-2">
-              <Card className="p-8 border-primary/20">
-                <div className="flex items-center gap-3 mb-6">
-                  <User className="h-6 w-6 text-primary" />
-                  <h2 className="text-2xl font-bold">Your Details</h2>
-                </div>
+            {/* ── Form column ── */}
+            <div className="lg:col-span-2 space-y-4">
 
-                <div className="space-y-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                      <Label htmlFor="firstName">First Name *</Label>
-                      <Input id="firstName" name="firstName" value={formData.firstName}
-                        onChange={handleChange} placeholder="John"
-                        className={`mt-1 ${errors.firstName ? "border-destructive" : ""}`} />
-                      {errors.firstName && <p className="text-sm text-destructive mt-1">{errors.firstName}</p>}
+              {/* Step indicator */}
+              <div className="flex items-center gap-3 mb-6">
+                {[{ n: 1, label: "Details" }, { n: 2, label: "Payment" }].map(({ n, label }, i) => (
+                  <div key={n} className="flex items-center gap-3">
+                    <div className={`flex items-center justify-center w-9 h-9 rounded-full text-sm font-semibold transition-colors ${
+                      step >= n ? "bg-primary text-white" : "bg-muted text-muted-foreground"
+                    }`}>{n}</div>
+                    <span className={`text-sm font-medium ${step >= n ? "text-foreground" : "text-muted-foreground"}`}>{label}</span>
+                    {i < 1 && <div className={`h-px w-8 ${step >= 2 ? "bg-primary" : "bg-muted"}`} />}
+                  </div>
+                ))}
+              </div>
+
+              {/* ── Step 1: Personal Details ── */}
+              {step === 1 && (
+                <Card className="p-8 border-primary/20">
+                  <div className="flex items-center gap-3 mb-6">
+                    <User className="h-5 w-5 text-primary" />
+                    <h2 className="text-xl font-bold">Your Details</h2>
+                  </div>
+                  <div className="space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div>
+                        <Label htmlFor="firstName">First Name *</Label>
+                        <Input id="firstName" name="firstName" value={details.firstName}
+                          onChange={handleDetailChange} placeholder="John"
+                          className={`mt-1 ${errors.firstName ? "border-destructive" : ""}`} />
+                        {errors.firstName && <p className="text-sm text-destructive mt-1">{errors.firstName}</p>}
+                      </div>
+                      <div>
+                        <Label htmlFor="lastName">Last Name *</Label>
+                        <Input id="lastName" name="lastName" value={details.lastName}
+                          onChange={handleDetailChange} placeholder="Doe"
+                          className={`mt-1 ${errors.lastName ? "border-destructive" : ""}`} />
+                        {errors.lastName && <p className="text-sm text-destructive mt-1">{errors.lastName}</p>}
+                      </div>
                     </div>
                     <div>
-                      <Label htmlFor="lastName">Last Name *</Label>
-                      <Input id="lastName" name="lastName" value={formData.lastName}
-                        onChange={handleChange} placeholder="Doe"
-                        className={`mt-1 ${errors.lastName ? "border-destructive" : ""}`} />
-                      {errors.lastName && <p className="text-sm text-destructive mt-1">{errors.lastName}</p>}
+                      <Label htmlFor="email">Email Address *</Label>
+                      <Input id="email" name="email" type="email" value={details.email}
+                        onChange={handleDetailChange} placeholder="john@example.com"
+                        className={`mt-1 ${errors.email ? "border-destructive" : ""}`} />
+                      {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
+                      <p className="text-xs text-muted-foreground mt-1">Account credentials will be sent here</p>
                     </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="email">Email Address *</Label>
-                    <Input id="email" name="email" type="email" value={formData.email}
-                      onChange={handleChange} placeholder="john@example.com"
-                      className={`mt-1 ${errors.email ? "border-destructive" : ""}`} />
-                    {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
-                    <p className="text-sm text-muted-foreground mt-1">Account credentials will be sent here</p>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="confirmEmail">Confirm Email *</Label>
-                    <Input id="confirmEmail" name="confirmEmail" type="email" value={formData.confirmEmail}
-                      onChange={handleChange} placeholder="john@example.com"
-                      className={`mt-1 ${errors.confirmEmail ? "border-destructive" : ""}`} />
-                    {errors.confirmEmail && <p className="text-sm text-destructive mt-1">{errors.confirmEmail}</p>}
-                  </div>
-
-                  <div className="flex items-start gap-3 pt-1">
-                    <Checkbox id="agreeTerms" checked={formData.agreeTerms}
-                      onCheckedChange={v => {
-                        setFormData(prev => ({ ...prev, agreeTerms: !!v }));
-                        if (errors.agreeTerms) setErrors(prev => ({ ...prev, agreeTerms: "" }));
-                      }}
-                      className={errors.agreeTerms ? "border-destructive" : ""} />
                     <div>
-                      <label htmlFor="agreeTerms" className="text-sm text-muted-foreground cursor-pointer">
-                        I agree to the{" "}
-                        <a href="/terms-of-service" target="_blank" className="text-primary hover:underline">Terms of Service</a>,{" "}
-                        <a href="/privacy-policy" target="_blank" className="text-primary hover:underline">Privacy Policy</a>, and{" "}
-                        <a href="/no-logs-policy" target="_blank" className="text-primary hover:underline">No-Logs Policy</a>
-                      </label>
-                      {errors.agreeTerms && <p className="text-sm text-destructive mt-1">{errors.agreeTerms}</p>}
+                      <Label htmlFor="confirmEmail">Confirm Email *</Label>
+                      <Input id="confirmEmail" name="confirmEmail" type="email" value={details.confirmEmail}
+                        onChange={handleDetailChange} placeholder="john@example.com"
+                        className={`mt-1 ${errors.confirmEmail ? "border-destructive" : ""}`} />
+                      {errors.confirmEmail && <p className="text-sm text-destructive mt-1">{errors.confirmEmail}</p>}
                     </div>
+                    <div className="flex items-start gap-3">
+                      <Checkbox id="agreeTerms" checked={details.agreeTerms}
+                        onCheckedChange={v => {
+                          setDetails(prev => ({ ...prev, agreeTerms: !!v }));
+                          if (errors.agreeTerms) setErrors(prev => ({ ...prev, agreeTerms: "" }));
+                        }}
+                        className={errors.agreeTerms ? "border-destructive" : ""} />
+                      <div>
+                        <label htmlFor="agreeTerms" className="text-sm text-muted-foreground cursor-pointer">
+                          I agree to the{" "}
+                          <a href="/terms-of-service" target="_blank" className="text-primary hover:underline">Terms of Service</a>,{" "}
+                          <a href="/privacy-policy"   target="_blank" className="text-primary hover:underline">Privacy Policy</a>, and{" "}
+                          <a href="/no-logs-policy"   target="_blank" className="text-primary hover:underline">No-Logs Policy</a>
+                        </label>
+                        {errors.agreeTerms && <p className="text-sm text-destructive mt-1">{errors.agreeTerms}</p>}
+                      </div>
+                    </div>
+                    <Button type="button" size="lg" className="w-full bg-primary hover:bg-primary/90" onClick={handleContinue}>
+                      Continue to Payment
+                    </Button>
                   </div>
+                </Card>
+              )}
 
-                  <Button
-                    type="button"
-                    size="lg"
-                    className="w-full bg-primary hover:bg-primary/90 gap-2"
-                    onClick={handleProceedToPayment}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing
-                      ? "Redirecting to payment…"
-                      : <><span>Proceed to Payment</span><ArrowRight className="h-4 w-4" /></>
-                    }
-                  </Button>
+              {/* ── Step 2: Card Details ── */}
+              {step === 2 && (
+                <Card className="p-8 border-primary/20">
+                  <div className="flex items-center gap-3 mb-6">
+                    <CreditCard className="h-5 w-5 text-primary" />
+                    <h2 className="text-xl font-bold">Card Details</h2>
+                  </div>
+                  <div className="space-y-5">
+                    <div>
+                      <Label htmlFor="cardNumber">Card Number *</Label>
+                      <Input id="cardNumber" name="cardNumber" value={card.cardNumber}
+                        onChange={handleCardChange} placeholder="1234 5678 9012 3456"
+                        maxLength={19}
+                        className={`mt-1 font-mono tracking-wider ${errors.cardNumber ? "border-destructive" : ""}`} />
+                      {errors.cardNumber && <p className="text-sm text-destructive mt-1">{errors.cardNumber}</p>}
+                    </div>
+                    <div>
+                      <Label htmlFor="cardName">Name on Card *</Label>
+                      <Input id="cardName" name="cardName" value={card.cardName}
+                        onChange={handleCardChange} placeholder="JOHN DOE"
+                        className={`mt-1 ${errors.cardName ? "border-destructive" : ""}`} />
+                      {errors.cardName && <p className="text-sm text-destructive mt-1">{errors.cardName}</p>}
+                    </div>
+                    <div className="grid grid-cols-2 gap-5">
+                      <div>
+                        <Label htmlFor="cardExpiry">Expiry Date *</Label>
+                        <Input id="cardExpiry" name="cardExpiry" value={card.cardExpiry}
+                          onChange={handleCardChange} placeholder="MM/YY" maxLength={5}
+                          className={`mt-1 ${errors.cardExpiry ? "border-destructive" : ""}`} />
+                        {errors.cardExpiry && <p className="text-sm text-destructive mt-1">{errors.cardExpiry}</p>}
+                      </div>
+                      <div>
+                        <Label htmlFor="cardCvv">CVV *</Label>
+                        <Input id="cardCvv" name="cardCvv" value={card.cardCvv}
+                          onChange={handleCardChange} placeholder="123"
+                          maxLength={4} type="password"
+                          className={`mt-1 ${errors.cardCvv ? "border-destructive" : ""}`} />
+                        {errors.cardCvv && <p className="text-sm text-destructive mt-1">{errors.cardCvv}</p>}
+                      </div>
+                    </div>
 
-                  <p className="text-xs text-muted-foreground text-center">
-                    <Lock className="h-3 w-3 inline mr-1" />
-                    You will be redirected to a secure page to enter your card details
-                  </p>
-                </div>
-              </Card>
+                    {/* Currency charge note */}
+                    {pkrEstimate && (
+                      <div className="flex items-start gap-2 bg-primary/5 border border-primary/15 rounded-lg px-4 py-3 text-sm">
+                        <Globe className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                        <p className="text-muted-foreground">
+                          Your card will be charged{" "}
+                          <span className="text-foreground font-semibold">PKR {pkrEstimate.toLocaleString()}</span>
+                          {" "}(equivalent to <span className="text-foreground font-semibold">${selectedPlan.price}</span> at today's rate).
+                          {" "}International cards are accepted — your bank converts to your local currency automatically.
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-1">
+                      <Button type="button" variant="outline" size="lg" className="flex-1"
+                        onClick={() => { setErrors({}); setStep(1); }} disabled={isProcessing}>
+                        Back
+                      </Button>
+                      <Button type="button" size="lg" className="flex-1 bg-primary hover:bg-primary/90"
+                        onClick={handlePayNow} disabled={isProcessing}>
+                        {isProcessing
+                          ? "Processing…"
+                          : `Pay ${pkrEstimate ? `PKR ${pkrEstimate.toLocaleString()}` : `$${selectedPlan.price}`}`
+                        }
+                      </Button>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground text-center">
+                      <Lock className="h-3 w-3 inline mr-1" />
+                      256-bit SSL encrypted · Visa &amp; Mastercard accepted
+                    </p>
+                  </div>
+                </Card>
+              )}
             </div>
 
-            {/* Order Summary */}
+            {/* ── Order Summary ── */}
             <div className="lg:col-span-1">
               <Card className="p-6 border-primary/20 sticky top-20">
                 <h3 className="font-bold mb-4">Order Summary</h3>
-
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-5">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Plan</span>
                     <span className="font-medium">{selectedPlan.name}</span>
@@ -201,7 +322,6 @@ export function Checkout() {
                     <span className="text-muted-foreground">Billing</span>
                     <span>${selectedPlan.price}/{selectedPlan.period}</span>
                   </div>
-
                   <div className="border-t border-border pt-3">
                     <div className="flex justify-between items-start">
                       <span className="font-semibold">Total</span>
@@ -209,13 +329,11 @@ export function Checkout() {
                         <p className="text-accent font-bold text-xl">${selectedPlan.price}</p>
                         {pkrEstimate ? (
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            ≈ PKR {pkrEstimate.toLocaleString()}
-                            <span className="ml-1 opacity-60">(live rate)</span>
+                            PKR {pkrEstimate.toLocaleString()} <span className="opacity-60">(charged)</span>
                           </p>
                         ) : (
                           <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1 justify-end">
-                            <RefreshCw className="h-3 w-3 animate-spin" />
-                            fetching rate…
+                            <RefreshCw className="h-3 w-3 animate-spin" /> fetching rate…
                           </p>
                         )}
                       </div>
@@ -223,11 +341,12 @@ export function Checkout() {
                   </div>
                 </div>
 
-                {/* Exchange rate note */}
                 {rate && (
-                  <div className="bg-primary/5 border border-primary/10 rounded-lg px-3 py-2 mb-4 text-xs text-muted-foreground">
-                    1 USD = PKR {rate.toFixed(2)} today.
-                    You will be charged PKR {pkrEstimate?.toLocaleString()} at checkout.
+                  <div className="bg-card/50 rounded-lg px-3 py-2 mb-4 text-xs text-muted-foreground">
+                    <p>1 USD = PKR {rate.toFixed(2)} <span className="opacity-60">(live rate)</span></p>
+                    <p className="mt-0.5 text-foreground/70">
+                      Pakistani users pay in PKR. International users pay in PKR — your bank converts it to your local currency.
+                    </p>
                   </div>
                 )}
 

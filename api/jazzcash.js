@@ -25,29 +25,24 @@ function generateHash(params) {
   return crypto.createHmac('sha256', INTEGRITY_SALT).update(str).digest('hex').toUpperCase();
 }
 
-// Fetch live USD → PKR rate. Falls back to a conservative hardcoded rate if
-// the exchange-rate service is unreachable.
+// MM/YY  →  MM/YYYY  (e.g. "12/26" → "12/2026")
+function formatExpiry(mmyy) {
+  const [mm, yy] = mmyy.replace(/\s/g, '').split('/');
+  return `${mm}/20${yy}`;
+}
+
 async function getUsdToPkrRate() {
   try {
-    const response = await fetch('https://open.er-api.com/v6/latest/USD', {
-      signal: AbortSignal.timeout(5000),
-    });
-    const data = await response.json();
-    if (data.result === 'success' && data.rates?.PKR) {
-      return data.rates.PKR;
-    }
+    const r = await fetch('https://open.er-api.com/v6/latest/USD', { signal: AbortSignal.timeout(5000) });
+    const d = await r.json();
+    if (d.result === 'success' && d.rates?.PKR) return d.rates.PKR;
   } catch {}
-
-  // Secondary source
   try {
-    const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD', {
-      signal: AbortSignal.timeout(5000),
-    });
-    const data = await response.json();
-    if (data.rates?.PKR) return data.rates.PKR;
+    const r = await fetch('https://api.exchangerate-api.com/v4/latest/USD', { signal: AbortSignal.timeout(5000) });
+    const d = await r.json();
+    if (d.rates?.PKR) return d.rates.PKR;
   } catch {}
-
-  return 280; // hardcoded fallback — update periodically if needed
+  return 280;
 }
 
 export default async function handler(req, res) {
@@ -58,52 +53,55 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { plan, firstName, lastName, email } = req.body || {};
+  const { plan, firstName, lastName, email, cardNumber, cardExpiry, cardCvv, cardName } = req.body || {};
 
   const selected = PLANS[plan];
-  if (!selected) return res.status(400).json({ error: 'Invalid plan' });
-  if (!email)    return res.status(400).json({ error: 'Missing required fields' });
+  if (!selected)                                     return res.status(400).json({ error: 'Invalid plan' });
+  if (!email || !cardNumber || !cardExpiry || !cardCvv || !cardName)
+                                                     return res.status(400).json({ error: 'Missing required fields' });
 
   const now    = new Date();
   const expiry = new Date(now.getTime() + 30 * 60 * 1000);
 
   const txnRefNo = `T${formatDateTime(now)}${Math.floor(Math.random() * 9000 + 1000)}`;
 
-  // Convert USD price to PKR at today's live rate
   const rate      = await getUsdToPkrRate();
-  const pkrAmount = Math.round(selected.price * rate);   // e.g. $4.99 × 280.5 = PKR 1,400
-  const amount    = String(pkrAmount * 100);              // JazzCash expects paisa (1 PKR = 100 paisa)
+  const pkrAmount = Math.round(selected.price * rate);
+  const amount    = String(pkrAmount * 100); // paisa
 
   const appUrl    = process.env.APP_URL || `https://${process.env.VERCEL_URL}`;
   const returnUrl = `${appUrl}/api/payment-callback`;
 
   const params = {
-    pp_Amount:            amount,
-    pp_BillReference:     'KestrelVPN',
-    pp_CustomerEmail:     email,
-    pp_Description:       selected.name,
-    pp_Language:          'EN',
-    pp_MerchantID:        MERCHANT_ID,
-    pp_Password:          PASSWORD,
-    pp_ReturnURL:         returnUrl,
-    pp_TxnCurrency:       'PKR',
-    pp_TxnDateTime:       formatDateTime(now),
-    pp_TxnExpiryDateTime: formatDateTime(expiry),
-    pp_TxnRefNo:          txnRefNo,
-    pp_TxnType:           'CC',
-    pp_Version:           '1.1',
+    pp_Amount:                 amount,
+    pp_BillReference:          'KestrelVPN',
+    pp_CustomerCardCvv:        cardCvv.replace(/\D/g, ''),
+    pp_CustomerCardExpiryDate: formatExpiry(cardExpiry),   // MM/YYYY
+    pp_CustomerCardNameOnCard: cardName,
+    pp_CustomerCardNumber:     cardNumber.replace(/\s/g, ''),
+    pp_CustomerEmail:          email,
+    pp_Description:            selected.name,
+    pp_Language:               'EN',
+    pp_MerchantID:             MERCHANT_ID,
+    pp_Password:               PASSWORD,
+    pp_ReturnURL:              returnUrl,
+    pp_TxnCurrency:            'PKR',
+    pp_TxnDateTime:            formatDateTime(now),
+    pp_TxnExpiryDateTime:      formatDateTime(expiry),
+    pp_TxnRefNo:               txnRefNo,
+    pp_TxnType:                'CC',
+    pp_Version:                '1.1',
   };
 
   params.pp_SecureHash = generateHash(params);
 
   console.log(
-    `[jazzcash] txn:${txnRefNo} | $${selected.price} USD | rate:${rate.toFixed(2)} | PKR ${pkrAmount} | paisa:${amount}`
+    `[jazzcash] ${txnRefNo} | $${selected.price} @ ${rate.toFixed(2)} = PKR ${pkrAmount} | expiry: ${formatExpiry(cardExpiry)}`
   );
 
   return res.status(200).json({
     gatewayUrl: GATEWAY_URL,
     params,
-    // Returned so the frontend can show the user what they'll be charged
     conversion: { usdPrice: selected.price, pkrAmount, rate: Math.round(rate * 100) / 100 },
   });
 }
