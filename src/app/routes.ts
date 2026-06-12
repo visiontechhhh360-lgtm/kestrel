@@ -4,6 +4,7 @@ import { Home } from "./pages/Home";
 import { Pricing } from "./pages/Pricing";
 import { Contact } from "./pages/Contact";
 import { Checkout } from "./pages/Checkout";
+import { PaymentReturn } from "./pages/PaymentReturn";
 import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { TermsOfService } from "./pages/TermsOfService";
 import { NoLogsPolicy } from "./pages/NoLogsPolicy";
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: "pricing", Component: Pricing },
       { path: "contact", Component: Contact },
       { path: "checkout", Component: Checkout },
+      { path: "payment-return", Component: PaymentReturn },
       { path: "privacy-policy", Component: PrivacyPolicy },
       { path: "terms-of-service", Component: TermsOfService },
       { path: "no-logs-policy", Component: NoLogsPolicy },
